@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS Customer;
+
+CREATE TABLE Customer(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+firstName VARCHAR(45) NOT NULL,
+lastName VARCHAR(45) NOT NULL,
+gender VARCHAR(9),
+age INT,
+street VARCHAR(45) NOT NULL,
+city VARCHAR(45) NOT NULL,
+state VARCHAR(45) NOT NULL,
+zip VARCHAR(15) NOT NULL,
+phone VARCHAR(45),
+email VARCHAR(45),
+username VARCHAR(20) NOT NULL
+);
+
+alter table Account
+ADD FOREIGN KEY (customerId) REFERENCES Customer(id);
