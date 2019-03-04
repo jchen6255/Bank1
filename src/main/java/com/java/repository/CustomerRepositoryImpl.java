@@ -11,17 +11,12 @@ import org.springframework.stereotype.Repository;
 
 import com.java.dto.Customer;
 import com.java.exception.InvalidStateException;
+import com.java.util.DBUtil;
 
 @Repository
 public class CustomerRepositoryImpl implements CustomerRepository{
 
-	SessionFactory factory;
-
-	{
-		Configuration configuration = new Configuration();
-		configuration.configure("hibernate-config.xml");
-		factory = configuration.buildSessionFactory();
-	}
+	SessionFactory factory = DBUtil.getSessionFactory();
 	
 	@Override
 	public void insertCustomer(Customer customer) throws InvalidStateException {

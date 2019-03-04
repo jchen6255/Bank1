@@ -16,7 +16,7 @@
           <a class="navbar-brand text-light" href="createAccount.jsp">Add Account</a>
           <a class="navbar-brand text-light" href="delete.jsp">Delete Account</a>
           <a class="navbar-brand text-light" href="deposit.jsp">Deposit Money</a>
-          <a class="navbar-brand text-light" href="withdraw.jsp">Withdraw Money</a>
+          <!-- <a class="navbar-brand text-light" href="withdraw.jsp">Withdraw Money</a> -->
           <a class="navbar-brand text-light" href="transfer.jsp">Transfer Money</a>
           <a class="navbar-brand text-light" href="transcations.jsp">View Transcation</a>
       </div>

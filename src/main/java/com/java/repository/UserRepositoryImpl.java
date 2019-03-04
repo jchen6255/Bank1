@@ -1,24 +1,23 @@
 package com.java.repository;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import com.java.dto.Report;
 import com.java.dto.User;
 import com.java.exception.InvalidStateException;
+import com.java.util.DBUtil;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
 
-	SessionFactory factory;
-
-	{
-		Configuration configuration = new Configuration();
-		configuration.configure("hibernate-config.xml");
-		factory = configuration.buildSessionFactory();
-	}
+	SessionFactory factory = DBUtil.getSessionFactory();
 	
 	@Override
 	public void insertUser(User u) throws InvalidStateException {
@@ -38,9 +37,12 @@ public class UserRepositoryImpl implements UserRepository{
 	@Override
 	public User getUser(String username, String password) {
 		Session session = factory.openSession();
-		Query<User> query= session.createQuery("from User where username = " + username +" and password = " + password, User.class);
-		User user= query.uniqueResult();
-		return user;
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.idEq(username));
+		criteria.add(Restrictions.eq("password", password));
+		User u = (User) criteria.uniqueResult();
+		session.close();
+		return u;
 	}
 
 }

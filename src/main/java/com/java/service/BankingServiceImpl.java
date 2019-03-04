@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.java.dto.Account;
+import com.java.dto.Payee;
 import com.java.dto.Report;
 import com.java.exception.InvalidStateException;
 import com.java.repository.AccountRepository;
@@ -18,7 +17,6 @@ public class BankingServiceImpl implements BankingService{
 	@Autowired AccountRepository rep;
 	
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
 	public void transferMoney(int fromAccountid, int toAccountid, double amount) throws InvalidStateException {
 		rep.transferMoney(fromAccountid, toAccountid, amount);
 	}
@@ -58,5 +56,21 @@ public class BankingServiceImpl implements BankingService{
 	@Override
 	public List<Account> getAllAccountsByPage(int pageNumber, int size) {
 		return rep.getAllAccountsByPage(pageNumber, size);
+	}
+
+	@Override
+	public List<Account> getAccounts(int custId) {
+		
+		return rep.getAccounts(custId);
+	}
+
+	@Override
+	public List<Payee> getPayees(int accountid) {
+		return rep.getPayees(accountid);
+	}
+
+	@Override
+	public void insertPayee(Payee payee) {
+		rep.insertPayee(payee);
 	}
 }

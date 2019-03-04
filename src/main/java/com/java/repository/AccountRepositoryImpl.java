@@ -3,30 +3,31 @@ package com.java.repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+
 import com.java.dto.Account;
+import com.java.dto.Payee;
+//import com.java.dto.Payee;
 import com.java.dto.Report;
 import com.java.exception.InvalidStateException;
+import com.java.util.DBUtil;
 
 @Repository
+@Primary
 public class AccountRepositoryImpl implements AccountRepository{
 
 	
-	SessionFactory factory;
+	SessionFactory factory = DBUtil.getSessionFactory();
 	
-	{
-		Configuration cfg = new Configuration();
-		cfg.configure("hibernate-config.xml");
-		factory = cfg.buildSessionFactory(); 
-	}
 	
 	@Override
 	public void withdraw(int accountid, double amount) throws InvalidStateException {
@@ -81,6 +82,7 @@ public class AccountRepositoryImpl implements AccountRepository{
 	public Account getAccount(int accountid) {
 		Session session = factory.openSession();
 		Account account = session.get(Account.class, accountid);
+		account.getPayees();
 		return account;
 		
 	}
@@ -114,6 +116,9 @@ public class AccountRepositoryImpl implements AccountRepository{
 		Session session = factory.openSession();
 		Query<Account> query = session.createQuery("from Account",Account.class);
 		List<Account> list = query.list();
+		 for(Account account: list) {
+			 account.getPayees();
+		 }
 		session.close();
 		return list;
 	}
@@ -189,6 +194,9 @@ public class AccountRepositoryImpl implements AccountRepository{
 		query.setFirstResult((pageNumber-1)*size);
 		query.setMaxResults(size*pageNumber);
 		 List<Account> list= query.list();
+		 for(Account account: list) {
+			 account.getPayees();
+		 }
 		 s.close();
 		 return list;
 		}
@@ -228,6 +236,40 @@ public class AccountRepositoryImpl implements AccountRepository{
 			throw new InvalidStateException("Account does not exits");
 		}
 		
+	}
+
+	@Override
+	public List<Account> getAccounts(int custId) {
+		Session session = factory.openSession();
+		Query<Account> query= session.createQuery("from Account where customerId = " + custId, Account.class);
+		List<Account> accounts = query.list();
+		
+		for(Account account : accounts) {
+			System.out.println("+++++=====++++++++++++++++++");
+			System.out.println(account.getPayees());
+		}
+			
+		session.close();
+		return accounts;
+	}
+
+	@Override
+	public List<Payee> getPayees(int accountid) {
+		Session session = factory.openSession();
+		Query<Account> query = session.createQuery("from Account where customerId = " + accountid,Account.class);
+		Account account = query.uniqueResult();
+		List<Payee> payees = account.getPayees();
+		session.close();
+		return payees;
+	}
+
+	@Override
+	public void insertPayee(Payee payee) {
+		Session session = factory.openSession();
+		session.beginTransaction();
+		session.save(payee);
+		session.getTransaction().commit();
+		session.close();
 	}
 
 }

@@ -17,6 +17,7 @@
 		<mapping class="com.java.dto.Report" /> 
 		<mapping class="com.java.dto.Customer" /> 
 		<mapping class="com.java.dto.User" /> 
+		<mapping class="com.java.dto.Payee" />
 	</session-factory>
 
 
